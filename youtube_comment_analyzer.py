@@ -194,7 +194,7 @@ class YouTubeCommentAnalyzer:
 
 # ** Test fonksiyonu
 if __name__ == "__main__":
-    api_key = os.getenv('YAIzaSyCPS9kVqg6ypBQ5WLsw2BZ8Tcx44bMVydk')
+    api_key = os.getenv('API_KEY')
     if not api_key:
         print("YOUTUBE_API_KEY environment variable'ı ayarlanmamış.")
         exit(1)
