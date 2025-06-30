@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube Yorum Analiz Sistemi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container { 
+            max-width: 700px; 
+            margin-top: 60px; 
+            margin-bottom: 60px;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .logo { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-analyze {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .loading {
+            display: none;
+        }
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+        }
+        .footer { 
+            margin-top: 40px; 
+            color: rgba(255,255,255,0.8); 
+            font-size: 0.95rem;
+        }
+        .flower-brand {
+            color: #e91e63;
+            font-weight: 600;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+<div class="container main-container">
+    <div class="card p-5">
+        <div class="text-center">
+            <div class="logo">
+                <i class="fas fa-chart-line me-3"></i>YouTube Yorum Analiz
+            </div>
+            <div class="subtitle">
+                AI destekli yorum analizi ile videolarınızın performansını ölçün 🌸
+            </div>
+        </div>
+        
+        <form method="post" id="analysisForm">
+            <div class="mb-4">
+                <label for="video_url" class="form-label fw-bold">
+                    <i class="fab fa-youtube me-2 text-danger"></i>YouTube Video Linki
+                </label>
+                <input type="url" class="form-control" id="video_url" name="video_url" 
+                       placeholder="https://www.youtube.com/watch?v=..." required>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Video linkini yapıştırın ve analizi başlatın
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="max_comments" class="form-label fw-bold">
+                    <i class="fas fa-comments me-2 text-primary"></i>Analiz Edilecek Yorum Sayısı
+                </label>
+                <select class="form-control" id="max_comments" name="max_comments">
+                    <option value="100">100 Yorum (Hızlı)</option>
+                    <option value="300" selected>300 Yorum (Orta)</option>
+                    <option value="500">500 Yorum (Detaylı)</option>
+                    <option value="1000">1000 Yorum (Kapsamlı)</option>
+                    <option value="2000">2000 Yorum (Maksimum)</option>
+                </select>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Daha fazla yorum = Daha detaylı analiz (Daha uzun süre)
+                </div>
+            </div>
+            
+            {% if error %}
+            <div class="alert alert-danger border-0 rounded-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+            
+            <button type="submit" class="btn btn-analyze text-white w-100" id="submitBtn">
+                <span class="btn-text">
+                    <i class="fas fa-play me-2"></i>Analizi Başlat
+                </span>
+                <span class="loading">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Analiz ediliyor...
+                </span>
+            </button>
+        </form>
+        
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h6 class="fw-bold">AI Analiz</h6>
+                    <small class="text-muted">Gelişmiş duygu analizi</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h6 class="fw-bold">Görselleştirme</h6>
+                    <small class="text-muted">Detaylı grafikler</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h6 class="fw-bold">Öneriler</h6>
+                    <small class="text-muted">Akıllı tavsiyeler</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer text-center">
+            <span>© 2025 YouTube Yorum Analiz Sistemi</span><br>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('analysisForm').addEventListener('submit', function() {
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const loading = submitBtn.querySelector('.loading');
+    
+    btnText.style.display = 'none';
+    loading.style.display = 'inline-block';
+    submitBtn.disabled = true;
+});
+</script>
+</body>
+</html> 
